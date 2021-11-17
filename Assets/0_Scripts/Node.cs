@@ -1,35 +1,28 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class Node : MonoBehaviour
 {
-    private List<Node> _neighbors = new List<Node>();
-    private Grid _grid;
-    private Vector2Int _posInGrid;
-    
+    public float viewRadius;
+    public List<Node> _neighbors = new List<Node>();
+
     public int cost = 1;
     public bool blocked;
 
     public void Initialize(Grid g, Vector2Int pos)
     {
-        _grid = g;
-        _posInGrid = pos;
         ChangeCost(1);
     }
 
     public List<Node> GetNeighbors()
     {
-        if (_neighbors.Count == 0)
-        {
-            _neighbors = _grid.GetNeighborsBasedOnPosition(_posInGrid);
-        }
-
         return _neighbors;
     }
 
-    private void OnMouseOver()
+    /* private void OnMouseOver()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -44,7 +37,7 @@ public class Node : MonoBehaviour
         if (Input.GetKey(KeyCode.UpArrow)) ChangeCost(cost + 1);
         if (Input.GetKey(KeyCode.DownArrow)) ChangeCost(cost - 1);
         if (Input.GetKey(KeyCode.R)) ChangeCost(1);
-    }
+    }*/
 
 
     void ChangeCost(int c)
@@ -59,4 +52,6 @@ public class Node : MonoBehaviour
         Color color = b ? Color.black : Color.white;
         GameManager.instance.ChangeGameObjectColor(gameObject, color);
     }
+
+
 }

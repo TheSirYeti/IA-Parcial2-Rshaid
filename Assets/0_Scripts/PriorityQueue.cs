@@ -13,7 +13,8 @@ public class PriorityQueue
     }
     public Node Get()
     {
-        if (Count() == 0) return null;
+        if (Count() == 0) 
+            return null;
 
         Node n = null;
         foreach (var item in _allNodes)

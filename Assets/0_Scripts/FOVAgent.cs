@@ -23,8 +23,7 @@ public class FOVAgent : MonoBehaviour
     private Vector3 _velocity;
 
 
-
-    // Update is called once per frame
+    
     void Update()
     {
         Inputs();

@@ -259,7 +259,7 @@ GameObject:
   - component: {fileID: 58327815}
   - component: {fileID: 58327814}
   - component: {fileID: 58327817}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -351,6 +351,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 1156182925}
+  - {fileID: 772729813}
   cost: 1
   blocked: 0
 --- !u!1 &96896384
@@ -506,7 +510,7 @@ GameObject:
   - component: {fileID: 398318339}
   - component: {fileID: 398318338}
   - component: {fileID: 398318341}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -598,6 +602,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 1347109199}
+  - {fileID: 1313977928}
   cost: 1
   blocked: 0
 --- !u!1 &429685705
@@ -705,7 +713,7 @@ GameObject:
   - component: {fileID: 504881745}
   - component: {fileID: 504881744}
   - component: {fileID: 504881747}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (13)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -797,6 +805,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 682731177}
+  - {fileID: 544200919}
   cost: 1
   blocked: 0
 --- !u!1 &509559669
@@ -904,7 +916,7 @@ GameObject:
   - component: {fileID: 544200917}
   - component: {fileID: 544200916}
   - component: {fileID: 544200919}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (12)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -996,6 +1008,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 1770362510}
+  - {fileID: 504881747}
+  - {fileID: 1254401496}
   cost: 1
   blocked: 0
 --- !u!1 &609048466
@@ -1109,19 +1126,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d86886fafe02d9a4aaab904ba6fe35a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2.5
+  speed: 2
+  isFollowing: 0
+  isReturning: 0
+  isPatroling: 0
+  isChasing: 0
   patrollingNodes:
   - {fileID: 1242452168}
   - {fileID: 912069669}
-  originalPatrollingNodes: []
-  viewRadius: 2
-  viewAngle: 2
+  currentNode: 0
+  viewRadius: 4
+  viewAngle: 45
   detectableAgentMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   obstacleMask:
     serializedVersion: 2
     m_Bits: 256
+  nodeMask:
+    serializedVersion: 2
+    m_Bits: 0
+  target: {fileID: 1019422312}
 --- !u!136 &655259942
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1153,7 +1178,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: dc4329b4c3f717a45a4082f9407d15fe, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1195,7 +1220,7 @@ GameObject:
   - component: {fileID: 682731175}
   - component: {fileID: 682731174}
   - component: {fileID: 682731177}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1287,6 +1312,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 761701035}
+  - {fileID: 1770362510}
+  - {fileID: 504881747}
   cost: 1
   blocked: 0
 --- !u!1 &705507993
@@ -1393,7 +1423,7 @@ GameObject:
   - component: {fileID: 761701033}
   - component: {fileID: 761701032}
   - component: {fileID: 761701035}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1485,6 +1515,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 1275746439}
+  - {fileID: 682731177}
   cost: 1
   blocked: 0
 --- !u!1 &772729808
@@ -1500,7 +1534,7 @@ GameObject:
   - component: {fileID: 772729811}
   - component: {fileID: 772729810}
   - component: {fileID: 772729813}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1592,6 +1626,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 1275746439}
+  - {fileID: 58327817}
   cost: 1
   blocked: 0
 --- !u!1 &809876494
@@ -1745,8 +1783,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 865307854}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.43, y: 0, z: -0.47}
-  m_LocalScale: {x: 8.360959, y: 1, z: 4.1846}
+  m_LocalPosition: {x: 2.43, y: 0.43, z: -0.47}
+  m_LocalScale: {x: 8.360959, y: 0.25542, z: 3.975663}
   m_Children: []
   m_Father: {fileID: 1377600124}
   m_RootOrder: 2
@@ -1961,7 +1999,7 @@ GameObject:
   - component: {fileID: 912069667}
   - component: {fileID: 912069666}
   - component: {fileID: 912069669}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (15)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2053,6 +2091,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 1254401496}
+  - {fileID: 1242452168}
   cost: 1
   blocked: 0
 --- !u!1 &934434874
@@ -2257,8 +2299,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1013782119}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.58, y: 0, z: -4.41}
-  m_LocalScale: {x: 8.291277, y: 1, z: 4.1846}
+  m_LocalPosition: {x: 0.58, y: 0.42999998, z: -4.41}
+  m_LocalScale: {x: 8.083995, y: 0.25542, z: 4.1846}
   m_Children: []
   m_Father: {fileID: 1377600124}
   m_RootOrder: 1
@@ -2334,6 +2376,7 @@ GameObject:
   - component: {fileID: 1019422315}
   - component: {fileID: 1019422314}
   - component: {fileID: 1019422313}
+  - component: {fileID: 1019422317}
   m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
@@ -2414,6 +2457,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1019422317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019422312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dc3f5576edf7634fa353c4820ddcc86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 4
 --- !u!1 &1024548854
 GameObject:
   m_ObjectHideFlags: 0
@@ -2625,8 +2681,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1080143095}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.55, y: 0, z: -2.37}
-  m_LocalScale: {x: 10.026626, y: 1, z: 3.6548293}
+  m_LocalPosition: {x: 1.55, y: 0.42999998, z: -2.37}
+  m_LocalScale: {x: 10.026626, y: 0.25542, z: 3.6548293}
   m_Children: []
   m_Father: {fileID: 1377600124}
   m_RootOrder: 0
@@ -2795,7 +2851,7 @@ GameObject:
   - component: {fileID: 1156182923}
   - component: {fileID: 1156182922}
   - component: {fileID: 1156182925}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2887,6 +2943,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 1313977928}
+  - {fileID: 1577647141}
+  - {fileID: 58327817}
   cost: 1
   blocked: 0
 --- !u!1 &1161059397
@@ -2935,21 +2996,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d86886fafe02d9a4aaab904ba6fe35a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2.5
+  speed: 2
+  isFollowing: 0
+  isReturning: 0
+  isPatroling: 0
+  isChasing: 0
   patrollingNodes:
   - {fileID: 504881747}
   - {fileID: 544200919}
   - {fileID: 1770362510}
   - {fileID: 682731177}
-  originalPatrollingNodes: []
-  viewRadius: 2
-  viewAngle: 2
+  currentNode: 0
+  viewRadius: 4
+  viewAngle: 45
   detectableAgentMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   obstacleMask:
     serializedVersion: 2
     m_Bits: 256
+  nodeMask:
+    serializedVersion: 2
+    m_Bits: 0
+  target: {fileID: 1019422312}
 --- !u!136 &1161059400
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2981,7 +3050,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: ade5dc3bad71dbe409454e119e062717, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3115,7 +3184,7 @@ GameObject:
   - component: {fileID: 1242452166}
   - component: {fileID: 1242452165}
   - component: {fileID: 1242452168}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (16)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3207,6 +3276,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 912069669}
   cost: 1
   blocked: 0
 --- !u!1 &1254401491
@@ -3222,7 +3294,7 @@ GameObject:
   - component: {fileID: 1254401494}
   - component: {fileID: 1254401493}
   - component: {fileID: 1254401496}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (14)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3314,6 +3386,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 544200919}
+  - {fileID: 912069669}
   cost: 1
   blocked: 0
 --- !u!1 &1275746434
@@ -3329,7 +3405,7 @@ GameObject:
   - component: {fileID: 1275746437}
   - component: {fileID: 1275746436}
   - component: {fileID: 1275746439}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3421,6 +3497,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 772729813}
+  - {fileID: 761701035}
+  - {fileID: 1770362510}
   cost: 1
   blocked: 0
 --- !u!1 &1313977923
@@ -3436,7 +3517,7 @@ GameObject:
   - component: {fileID: 1313977926}
   - component: {fileID: 1313977925}
   - component: {fileID: 1313977928}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3451,7 +3532,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1313977923}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.3, y: -1.7717228, z: 5.58}
+  m_LocalPosition: {x: -0.46, y: -1.7717228, z: 5.58}
   m_LocalScale: {x: 0.47992, y: 0.47992, z: 0.47992}
   m_Children: []
   m_Father: {fileID: 873185146}
@@ -3528,6 +3609,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 398318341}
+  - {fileID: 1156182925}
   cost: 1
   blocked: 0
 --- !u!1 &1347109194
@@ -3543,7 +3628,7 @@ GameObject:
   - component: {fileID: 1347109197}
   - component: {fileID: 1347109196}
   - component: {fileID: 1347109199}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3635,6 +3720,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 398318341}
+  - {fileID: 1577647141}
   cost: 1
   blocked: 0
 --- !u!1 &1377600123
@@ -3775,7 +3864,7 @@ GameObject:
   - component: {fileID: 1577647139}
   - component: {fileID: 1577647138}
   - component: {fileID: 1577647141}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3867,6 +3956,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 1347109199}
+  - {fileID: 1156182925}
   cost: 1
   blocked: 0
 --- !u!1 &1626079326
@@ -3901,21 +3994,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d86886fafe02d9a4aaab904ba6fe35a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2.5
+  speed: 2
+  isFollowing: 0
+  isReturning: 0
+  isPatroling: 0
+  isChasing: 0
   patrollingNodes:
   - {fileID: 1347109199}
   - {fileID: 398318341}
   - {fileID: 1313977928}
   - {fileID: 1577647141}
-  originalPatrollingNodes: []
-  viewRadius: 2
-  viewAngle: 2
+  currentNode: 0
+  viewRadius: 4
+  viewAngle: 45
   detectableAgentMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   obstacleMask:
     serializedVersion: 2
     m_Bits: 256
+  nodeMask:
+    serializedVersion: 2
+    m_Bits: 0
+  target: {fileID: 1019422312}
 --- !u!136 &1626079328
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3947,7 +4048,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: cf122c996ca843d4aaa27ea5fdf34977, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4128,21 +4229,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d86886fafe02d9a4aaab904ba6fe35a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2.5
+  speed: 2
+  isFollowing: 0
+  isReturning: 0
+  isPatroling: 0
+  isChasing: 0
   patrollingNodes:
   - {fileID: 1770362510}
   - {fileID: 1275746439}
   - {fileID: 761701035}
   - {fileID: 682731177}
-  originalPatrollingNodes: []
-  viewRadius: 2
-  viewAngle: 2
+  currentNode: 0
+  viewRadius: 4
+  viewAngle: 45
   detectableAgentMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   obstacleMask:
     serializedVersion: 2
     m_Bits: 256
+  nodeMask:
+    serializedVersion: 2
+    m_Bits: 0
+  target: {fileID: 1019422312}
 --- !u!136 &1662600047
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4174,7 +4283,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: b182990a753e9c14da30dc67e8e3b191, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4308,7 +4417,7 @@ GameObject:
   - component: {fileID: 1770362508}
   - component: {fileID: 1770362507}
   - component: {fileID: 1770362510}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Node (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4400,6 +4509,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d0abdabfdb71b4b9d92c794b1e81d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewRadius: 2
+  _neighbors:
+  - {fileID: 1275746439}
+  - {fileID: 682731177}
+  - {fileID: 544200919}
   cost: 1
   blocked: 0
 --- !u!1 &1868573650

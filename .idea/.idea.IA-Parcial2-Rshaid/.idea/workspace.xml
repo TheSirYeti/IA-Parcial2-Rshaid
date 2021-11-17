@@ -18,6 +18,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/0_Scripts/NPC.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../IA-Parcial1/Assets/Scripts/Hunter/FSM/PatrolState.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/0_Scripts/NpcManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/0_Scripts/PlayerMovement.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="20qUq3HNqz27klpeWmZUyLKmko6" />
   <component name="ProjectViewState">
@@ -68,6 +69,8 @@
       <workItem from="1636771829034" duration="1303000" />
       <workItem from="1636906711728" duration="14588000" />
       <workItem from="1636937987599" duration="5486000" />
+      <workItem from="1636985910533" duration="17809000" />
+      <workItem from="1637174334558" duration="6035000" />
     </task>
     <servers />
   </component>

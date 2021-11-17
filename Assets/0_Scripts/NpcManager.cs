@@ -28,15 +28,40 @@ public class NpcManager : MonoBehaviour
                 minDistance = dist;
             }
         }
-
         return id;
     }
 
-    public void NotifyOtherNPCs()
+    public void NotifyNPCs(Node node, string status)
     {
         foreach (NPC npc in npcs)
         {
-            npc.
+            if (!npc.isFollowing)
+            {
+                npc.currentNode = 0;
+                npc.patrollingNodes = new List<Node>();
+                npc.patrollingNodes = npc.ConstructPathAStar(nodes[GetClosestNode(npc.transform)], node);
+            }
+
+            if (status == "Follow")
+            {
+                npc.isFollowing = true;
+                //npc.isPatroling = false;
+                npc.isReturning = false;
+            }
+        
+            if (status == "Return")
+            {
+                npc.isFollowing = false;
+                npc.isPatroling = false;
+                npc.isReturning = true;
+            }
+        
+            if (status == "Patrol")
+            {
+                npc.isFollowing = false;
+                npc.isPatroling = true;
+                npc.isReturning = false;
+            }
         }
     }
 }

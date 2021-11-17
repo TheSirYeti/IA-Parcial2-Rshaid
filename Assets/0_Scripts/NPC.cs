@@ -1,30 +1,40 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
+using TMPro;
 using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
     public float speed;
+    public bool isFollowing, isReturning, isPatroling, isChasing;
     
+    
+    [Header("Nodes")]
     private Node startNode;
     private Node goalNode;
 
     [Header("Patrol")]
     public List<Node> patrollingNodes = new List<Node>();
-    private int currentNode;
+    public int currentNode;
     private int patrollingDireciton;
-    public List<Node> originalPatrollingNodes;
-    private bool amPatroling = true;
+    private List<Node> originalPatrollingNodes;
 
     [Header("Field of View")]
     public float viewRadius;
     public float viewAngle;
     public LayerMask detectableAgentMask;
     public LayerMask obstacleMask;
+    public LayerMask nodeMask;
+    public GameObject target;
 
     private void Start()
     {
+        isPatroling = true;
+        isReturning = false;
+        isFollowing = false;
+        isChasing = false;
         originalPatrollingNodes = patrollingNodes;
     }
 
@@ -36,20 +46,38 @@ public class NPC : MonoBehaviour
 
     void Patrol()
     {
-        if (amPatroling)
-        {
-            Vector3 direction = patrollingNodes[currentNode].transform.position - transform.position;
-            transform.forward = direction;
-            transform.position += transform.forward * speed * Time.fixedDeltaTime;
+        Vector3 direction;
         
-            if (direction.magnitude <= 0.1f)
-            {
-                currentNode++;
+        if(!isChasing)
+            direction = patrollingNodes[currentNode].transform.position - transform.position;
+        else direction = target.transform.position - transform.position;
+        
+        transform.forward = direction;
+        transform.position += transform.forward * speed * Time.fixedDeltaTime;
+        
+        if (direction.magnitude <= 0.1f)
+        {
+            currentNode++;
 
-                if (currentNode == patrollingNodes.Count)
+            if (currentNode == patrollingNodes.Count)
+            {
+                    
+                if (isReturning)
                 {
-                    currentNode = 0;
+                    Debug.Log("Patrullo");
+                    patrollingNodes = originalPatrollingNodes;
+                    isPatroling = true;
+                    isReturning = false;
                 }
+                    
+                if (isFollowing)
+                {
+                    Debug.Log("Vuelvo");
+                    patrollingNodes.Reverse();
+                    isReturning = true;
+                    isFollowing = false;
+                }
+                currentNode = 0;
             }
         }
     }
@@ -58,50 +86,49 @@ public class NPC : MonoBehaviour
     {
         if (startingNode == null && goalNode == null) return default;
 
-        PriorityQueue frontier = new PriorityQueue();
-        frontier.Put(startingNode, 0);
+            PriorityQueue frontier = new PriorityQueue();
+            frontier.Put(startingNode, 0);
 
-        Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
-        Dictionary<Node, int> costSoFar = new Dictionary<Node, int>();
-        cameFrom.Add(startingNode, null);
-        costSoFar.Add(startingNode, 0);
+            Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
+            Dictionary<Node, int> costSoFar = new Dictionary<Node, int>();
+            cameFrom.Add(startingNode, null);
+            costSoFar.Add(startingNode, 0);
 
-        while (frontier.Count() > 0)
-        {
-            Node current = frontier.Get();
-
-            if (current == goalNode)
+            while (frontier.Count() > 0)
             {
-                List<Node> path = new List<Node>();
-                Node nodeToAdd = current;
-                while (nodeToAdd != null)
-                {
-                    path.Add(nodeToAdd);
-                    nodeToAdd = cameFrom[nodeToAdd];
-                }
-                //path.Reverse();
-                return path;
-            }
+                Node current = frontier.Get();
 
-            foreach (var next in current.GetNeighbors())
-            {
-                int newCost = costSoFar[current] + next.cost;
-                //Lo unico que cambia es la priority del frontier que le sumamos la heuristica
-                float priority = newCost + Heuristic(next.transform.position, goalNode.transform.position);
-                if (!costSoFar.ContainsKey(next))
+                if (current == goalNode)
                 {
-                    frontier.Put(next, priority);
-                    costSoFar.Add(next, newCost);
-                    cameFrom.Add(next, current);
+                    List<Node> path = new List<Node>();
+                    Node nodeToAdd = current;
+                    while (nodeToAdd != null)
+                    {
+                        path.Add(nodeToAdd);
+                        nodeToAdd = cameFrom[nodeToAdd];
+                    }
+                    path.Reverse();
+                    return path;
                 }
-                else if (costSoFar.ContainsKey(next) && newCost < costSoFar[next])
+
+                foreach (var next in current.GetNeighbors())
                 {
-                    frontier.Put(next, priority);
-                    costSoFar[next] = newCost;
-                    cameFrom[next] = current;
+                    int newCost = costSoFar[current] + next.cost;
+                    float priority = newCost + Heuristic(next.transform.position, goalNode.transform.position);
+                    if (!costSoFar.ContainsKey(next))
+                    {
+                        frontier.Put(next, priority);
+                        costSoFar.Add(next, newCost);
+                        cameFrom.Add(next, current);
+                    }
+                    else if (costSoFar.ContainsKey(next) && newCost < costSoFar[next])
+                    {
+                        frontier.Put(next, priority);
+                        costSoFar[next] = newCost;
+                        cameFrom[next] = current;
+                    }
                 }
             }
-        }
         return default;
     }
 
@@ -112,7 +139,6 @@ public class NPC : MonoBehaviour
     
     void FieldOfView()
     {
-        //ClearDetectableEnemies();
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, detectableAgentMask);
 
         foreach (var item in targetsInViewRadius)
@@ -121,20 +147,61 @@ public class NPC : MonoBehaviour
             
             if (Vector3.Angle(transform.forward, dirToTarget.normalized) < viewAngle / 2)
             {
-                if (InSight(transform.position, item.transform.position))
+                if(!Physics.Raycast(transform.position, dirToTarget, dirToTarget.magnitude, obstacleMask) && dirToTarget.magnitude < viewRadius)
                 {
-                    patrollingNodes = ConstructPathAStar(patrollingNodes[currentNode],
-                        NpcManager.instance.nodes[NpcManager.instance.GetClosestNode(this.transform)]);
                     currentNode = 0;
-                    //item.GetComponent<DetectableEnemy>().Detect(true);
-                    //_detectedAgents.Add(item.GetComponent<DetectableEnemy>());
+                    int id = NpcManager.instance.GetClosestNode(this.transform);
+                    isChasing = true;
+                    NpcManager.instance.NotifyNPCs(NpcManager.instance.nodes[id], "Follow");
                     Debug.DrawLine(transform.position, item.transform.position, Color.red);
+                    Debug.Log("Detecto player");
                 }
                 else
                 {
+                    if(isChasing)
+                        CheckLineOfSight();
+                    isChasing = false;
                     Debug.DrawLine(transform.position, item.transform.position, Color.green);
                 }
             }
+        }
+        
+    }
+
+    void CheckLineOfSight()
+    {
+        bool flag = false;
+        Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, nodeMask);
+
+        foreach (var item in targetsInViewRadius)
+        {
+            Vector3 dirToTarget = (item.transform.position - transform.position);
+            
+            if (Vector3.Angle(transform.forward, dirToTarget.normalized) < viewAngle)
+            {
+                if(!Physics.Raycast(transform.position, dirToTarget, dirToTarget.magnitude, obstacleMask) && dirToTarget.magnitude < viewRadius /2)
+                {
+                    for(int i = 0; i < originalPatrollingNodes.Count; i++)
+                    {
+                        if (item.GetComponent<Node>() != null && item.GetComponent<Node>() == originalPatrollingNodes[i])
+                        {
+                            patrollingNodes = originalPatrollingNodes;
+                            currentNode = i;
+                            flag = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!flag)
+        {
+            patrollingNodes =
+                ConstructPathAStar(NpcManager.instance.nodes[NpcManager.instance.GetClosestNode(transform)],
+                    originalPatrollingNodes[0]);
+            currentNode = 0;
+            isFollowing = false;
+            isReturning = true;
         }
     }
 
@@ -147,15 +214,11 @@ public class NPC : MonoBehaviour
     
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(transform.position, viewRadius);
-
         Vector3 lineA = DirFromAngle(viewAngle / 2 + transform.eulerAngles.y);
         Vector3 lineB = DirFromAngle(-viewAngle / 2 + transform.eulerAngles.y);
 
         Gizmos.DrawLine(transform.position, transform.position + lineA * viewRadius);
         Gizmos.DrawLine(transform.position, transform.position + lineB * viewRadius);
-
     }
     
     Vector3 DirFromAngle(float angle)
