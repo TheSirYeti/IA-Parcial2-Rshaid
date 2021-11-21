@@ -9,8 +9,7 @@ public class NPC : MonoBehaviour
 {
     public float speed;
     public bool isFollowing, isReturning, isPatroling, isChasing;
-    
-    
+
     [Header("Nodes")]
     private Node startNode;
     private Node goalNode;
@@ -65,17 +64,28 @@ public class NPC : MonoBehaviour
                 if (isReturning)
                 {
                     Debug.Log("Patrullo");
-                    patrollingNodes = originalPatrollingNodes;
-                    isPatroling = true;
-                    isReturning = false;
+                    //patrollingNodes = originalPatrollingNodes;
+                    CheckLineOfSight();
+                    if (patrollingNodes == originalPatrollingNodes)
+                    {
+                        isPatroling = true;
+                        isReturning = false;
+                    }
                 }
                     
                 if (isFollowing)
                 {
-                    Debug.Log("Vuelvo");
-                    patrollingNodes.Reverse();
-                    isReturning = true;
-                    isFollowing = false;
+                    if (InSight(transform.position, target.transform.position))
+                    {
+                        isChasing = true;
+                    }
+                    else
+                    {
+                        Debug.Log("Vuelvo");
+                        patrollingNodes.Reverse();
+                        isReturning = true;
+                        isFollowing = false; 
+                    }
                 }
                 currentNode = 0;
             }
@@ -84,57 +94,62 @@ public class NPC : MonoBehaviour
     
     public List<Node> ConstructPathAStar(Node startingNode, Node goalNode)
     {
-        if (startingNode == null && goalNode == null) return default;
+        if (startingNode == null && goalNode == null) 
+            return default;
 
-            PriorityQueue frontier = new PriorityQueue();
-            frontier.Put(startingNode, 0);
+        PriorityQueue frontier = new PriorityQueue();
+        frontier.Put(startingNode, 0);
 
-            Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
-            Dictionary<Node, int> costSoFar = new Dictionary<Node, int>();
-            cameFrom.Add(startingNode, null);
-            costSoFar.Add(startingNode, 0);
+        Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
+        Dictionary<Node, int> costSoFar = new Dictionary<Node, int>();
+        cameFrom.Add(startingNode, null);
+        costSoFar.Add(startingNode, 0);
 
-            while (frontier.Count() > 0)
+        while (frontier.Count() > 0)
+        {
+            Node current = frontier.Get();
+
+            if (current == goalNode)
             {
-                Node current = frontier.Get();
-
-                if (current == goalNode)
+                List<Node> path = new List<Node>();
+                Node nodeToAdd = current;
+                while (nodeToAdd != null)
                 {
-                    List<Node> path = new List<Node>();
-                    Node nodeToAdd = current;
-                    while (nodeToAdd != null)
-                    {
-                        path.Add(nodeToAdd);
-                        nodeToAdd = cameFrom[nodeToAdd];
-                    }
-                    path.Reverse();
-                    return path;
+                    path.Add(nodeToAdd);
+                    nodeToAdd = cameFrom[nodeToAdd];
                 }
+                path.Reverse();
+                return path;
+            }
 
-                foreach (var next in current.GetNeighbors())
+            foreach (var next in current.GetNeighbors())
+            {
+                int newCost = costSoFar[current] + next.cost;
+                float priority = newCost + Heuristic(next.transform.position, goalNode.transform.position);
+                if (!costSoFar.ContainsKey(next))
                 {
-                    int newCost = costSoFar[current] + next.cost;
-                    float priority = newCost + Heuristic(next.transform.position, goalNode.transform.position);
-                    if (!costSoFar.ContainsKey(next))
-                    {
-                        frontier.Put(next, priority);
-                        costSoFar.Add(next, newCost);
-                        cameFrom.Add(next, current);
-                    }
-                    else if (costSoFar.ContainsKey(next) && newCost < costSoFar[next])
-                    {
-                        frontier.Put(next, priority);
-                        costSoFar[next] = newCost;
-                        cameFrom[next] = current;
-                    }
+                    frontier.Put(next, priority);
+                    costSoFar.Add(next, newCost);
+                    cameFrom.Add(next, current);
+                }
+                else if (costSoFar.ContainsKey(next) && newCost < costSoFar[next])
+                {
+                    frontier.Put(next, priority);
+                    costSoFar[next] = newCost;
+                    cameFrom[next] = current;
                 }
             }
+        }
         return default;
     }
 
     float Heuristic(Vector3 a, Vector3 b)
     {
-        return Vector3.Distance(a, b);
+        if (InSight(a, b))
+        {
+            return Vector3.Distance(a, b);
+        }
+        return -1f;
     }
     
     void FieldOfView()
@@ -150,7 +165,7 @@ public class NPC : MonoBehaviour
                 if(!Physics.Raycast(transform.position, dirToTarget, dirToTarget.magnitude, obstacleMask) && dirToTarget.magnitude < viewRadius)
                 {
                     currentNode = 0;
-                    int id = NpcManager.instance.GetClosestNode(this.transform);
+                    int id = NpcManager.instance.GetClosestNode(this);
                     isChasing = true;
                     NpcManager.instance.NotifyNPCs(NpcManager.instance.nodes[id], "Follow");
                     Debug.DrawLine(transform.position, item.transform.position, Color.red);
@@ -197,15 +212,20 @@ public class NPC : MonoBehaviour
         if (!flag)
         {
             patrollingNodes =
-                ConstructPathAStar(NpcManager.instance.nodes[NpcManager.instance.GetClosestNode(transform)],
+                ConstructPathAStar(NpcManager.instance.nodes[NpcManager.instance.GetClosestNode(this)],
                     originalPatrollingNodes[0]);
             currentNode = 0;
             isFollowing = false;
             isReturning = true;
+
+            if (patrollingNodes.Count == 1)
+            {
+                patrollingNodes = originalPatrollingNodes;
+            }
         }
     }
 
-    bool InSight(Vector3 start, Vector3 end)
+    public bool InSight(Vector3 start, Vector3 end)
     {
         Vector3 dir = end - start;
         if (!Physics.Raycast(start, dir, dir.magnitude, obstacleMask)) return true;

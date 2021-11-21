@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class NpcManager : MonoBehaviour
 {
@@ -15,14 +16,14 @@ public class NpcManager : MonoBehaviour
         instance = this;
     }
 
-    public int GetClosestNode(Transform t)
+    public int GetClosestNode(NPC npc)
     {
         int id = -1;
         float minDistance = Mathf.Infinity;
         for(int i = 0; i < nodes.Count; i++)
         {
-            float dist = Vector3.Distance(t.position, nodes[i].transform.position);
-            if (dist < minDistance)
+            float dist = Vector3.Distance(npc.transform.position, nodes[i].transform.position);
+            if (dist < minDistance && npc.InSight(npc.transform.position, nodes[i].transform.position))
             {
                 id = i;
                 minDistance = dist;
@@ -39,7 +40,7 @@ public class NpcManager : MonoBehaviour
             {
                 npc.currentNode = 0;
                 npc.patrollingNodes = new List<Node>();
-                npc.patrollingNodes = npc.ConstructPathAStar(nodes[GetClosestNode(npc.transform)], node);
+                npc.patrollingNodes = npc.ConstructPathAStar(nodes[GetClosestNode(npc)], node);
             }
 
             if (status == "Follow")
@@ -63,5 +64,14 @@ public class NpcManager : MonoBehaviour
                 npc.isReturning = false;
             }
         }
+    }
+
+    public bool VerifyNPCPath(NPC npc, Node node)
+    {
+        List<Node> verification = npc.ConstructPathAStar(nodes[GetClosestNode(npc)], node);
+        if (verification == npc.patrollingNodes)
+            return true;
+        else return false;
+
     }
 }
